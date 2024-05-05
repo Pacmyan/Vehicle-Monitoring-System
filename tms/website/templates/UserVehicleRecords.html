@@ -1,0 +1,29 @@
+{% extends "home.html" %}
+Vehicle Records
+{%block template%}
+your vehicles
+{% if records %}
+<table>
+  <thead>
+    <tr>
+      <th>Vehicle Number</th>
+      <th>Allow/Disallow</th>
+      <th>In/Out</th>
+      <th>Purpose</th>
+      <th>TimeStamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in records %}
+    <tr>
+      <td>{{ record.vehicleNumber }}</td>
+      <td>{{ record.allowDisallow }}</td>
+      <td>{{ record.inOut }}</td>
+      <td>{{ record.purpose }}</td>
+      <td>{{ record.date }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{%endblock%}

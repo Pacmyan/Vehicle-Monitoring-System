@@ -1,0 +1,71 @@
+{% extends "base2.html" %}
+{% block title %}login{% endblock %}
+{%block content%}
+<style>
+    .login-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.input-form {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.content-form {
+    margin-bottom: 15px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+button[type="submit"]:active {
+    background-color: #3e8e41;
+}
+
+/* Error Message */
+.error-message {
+    color: red;
+}
+
+/* Success Message */
+.success-message {
+    color: green;
+}
+
+</style>
+<div class = "login-form">
+    admin/security
+    <form method="post">
+        <div class="content-form">
+            <label for="Username">Username</label>
+            <input type="text" class="input-form" id="Username" name="Username" placeholder="Enter Username">
+        </div>
+        <div class="content-form">
+            <label for="password">password</label>
+            <input type="password" class="input-form" id="password" name="password" placeholder="Enter Password">
+        </div>
+        <button type="submit">submit</button>
+    </form>
+</div>
+{%endblock%}

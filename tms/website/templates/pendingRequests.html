@@ -1,0 +1,110 @@
+{% extends "home.html" %}
+{% block template %}
+<h2>Your Vehicles</h2>
+{% if pending %}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Purpose</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for pending_item in pending %}
+    {% if pending_item.action == 'pending' %}
+    <tr>
+      <td>{{ pending_item.name }}</td>
+      <td>{{ pending_item.reason }}</td>
+      <td>
+        <button class="in-out-btn btn" data-id="{{ pending_item.id }}" data-action="Allow">Allow</button>
+        <button class="in-out-btn btn" data-id="{{ pending_item.id }}" data-action="Disallow">Disallow</button>
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+<div id="disallowForm" style="display: none;">
+  <h3>Enter Purpose</h3>
+  <form id="purposeForm">
+    <label for="purpose">Purpose:</label>
+    <input type="text" id="purpose" name="purpose">
+    <button type="submit">Submit</button>
+  </form>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const buttons = document.querySelectorAll('.in-out-btn');
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        const action = this.getAttribute('data-action');
+        const id = this.getAttribute('data-id');
+        if (action === 'Allow') {
+          updateAction(id, 'allowed');
+        } else if (action === 'Disallow') {
+          showDisallowForm(id);
+        }
+      });
+    });
+
+    function updateAction(id, action) {
+      fetch("{{ url_for('auth.update_action') }}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id, action: action }),
+      })
+      .then(response => {
+        if (response.ok) {
+          // Reload the page or update UI as needed
+          location.reload();
+        } else {
+          console.error('Failed to update action');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function showDisallowForm(id) {
+        const form = document.getElementById('disallowForm');
+        form.style.display = 'block';
+        const purposeForm = document.getElementById('purposeForm');
+        purposeForm.setAttribute('data-id', id); // Set the data-id attribute here
+        purposeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const purpose = document.getElementById('purpose').value;
+            const id = this.getAttribute('data-id');
+            submitDisallowForm(purpose, id);
+        });
+    }
+
+
+    function submitDisallowForm(purpose, id) {
+      fetch("{{ url_for('auth.submit_disallow_form') }}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ purpose: purpose, id: id }),
+      })
+      .then(response => {
+        if (response.ok) {
+          // Handle success
+          console.log('Form submitted successfully');
+        } else {
+          console.error('Failed to submit form');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+      window.location.reload();
+    }
+  });
+</script>
+{% endblock %}

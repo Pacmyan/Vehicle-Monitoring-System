@@ -1,0 +1,35 @@
+{% extends "home.html" %}
+Register Your Vehicle
+{%block template%}
+your vehicles
+{% if visitors %}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Date</th>
+      <th>Purpose</th>
+      <th>Number Plate</th>
+      <th>Allowance</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for visitor in visitors %}
+    <tr>
+      <td>{{ visitor.name }}</td>
+      <td>{{ visitor.date }}</td>
+      <td>{{ visitor.purpose }}</td>
+      <td>{{ visitor.vehicle_number }}</td>
+      <td>{{ visitor.allowance }}</td>
+      <td><form action="/toggle_allowance/{{ visitor.id }}" method="post">
+        <input type="submit" value="Change">
+      </form></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No pending approvals.</p>
+{% endif %}
+{%endblock%}

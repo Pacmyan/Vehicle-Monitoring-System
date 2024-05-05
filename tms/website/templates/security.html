@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+
+{% extends "base2.html" %}
+
+{% block content %}
+<div>
+    <form action="{{ url_for('auth.search_registration') }}" method="GET">
+        <input type="text" id="plate_number" name="plate_number" placeholder="Enter number plate">
+        <button type="submit" class="btn">Search</button>
+    </form>
+
+    {% block search_results %}
+        {% if registrations %}
+            <h2>Search Results:</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Vehicle Number</th>
+                    <th>Licence Number</th>
+                    <th>University ID</th>
+                    <th>University Email</th>
+                    <th>Vehicle Type</th>
+                    <th>Approval</th>
+                    <th>Action</th>
+                </tr>
+                {% for registration in registrations %}
+                    <tr>
+                        <td>{{ registration.name }}</td>
+                        <td>{{ registration.vehicleNumber }}</td>
+                        <td>{{ registration.licenceNumber }}</td>
+                        <td>{{ registration.universityId }}</td>
+                        <td>{{ registration.universityEmail }}</td>
+                        <td>{{ registration.vehicleType }}</td>
+                        <td>{{ registration.approval }}</td>
+                        <td>
+                            {% if registration.approval == 'declined' %}
+                                <button class="showPurposeBtn btn">Select Purpose</button>
+                            {% elif registration.approval == 'approved' %}
+                                <button class="in-out-btn btn" data-action="in" data-vehicle="{{ registration.vehicleNumber }}" data-name="{{ registration.name }}" data-id="{{ registration.user_id }}">in</button>
+                                <button class="in-out-btn btn" data-action="out" data-vehicle="{{ registration.vehicleNumber }}" data-name="{{ registration.name }}" data-id="{{ registration.user_id }}">out</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% elif visitor_info %}
+            <h2>Visitor Information:</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Faculty Name</th>
+                    <th>Occupation</th>
+                    <th>Faculty ID</th>
+                    <th>Email</th>
+                    <th>Vehicle Number</th>
+                    <th>Vehicle Type</th>
+                    <th>Purpose</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>{{ visitor_info.name }}</td>
+                    <td>{{ visitor_info.faculty_name }}</td>
+                    <td>{{ visitor_info.occupation }}</td>
+                    <td>{{ visitor_info.faculty_id }}</td>
+                    <td>{{ visitor_info.email }}</td>
+                    <td>{{ visitor_info.vehicle_number }}</td>
+                    <td>{{ visitor_info.vehicle_type }}</td>
+                    <td>{{ visitor_info.purpose }}</td>
+                    {% if visitor_info.allowance == "Yes" %}
+                    <td>
+                        <button class="in-out-btn btn" data-action="in">in</button>
+                        <button class="in-out-btn btn" data-action="out">out</button>
+                    </td>
+                    {% else %}
+                    <td id = "td1">
+                    </td>
+                    {% endif%}
+                </tr>
+            </table>
+        {% else %}
+            <p>No registration or visitor found for the entered vehicle number.</p>
+            <table>
+                <tr>
+                    <th>Vehicle Number</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>{{ request.args.get('plate_number') }}</td>
+                    <td><button class="showPurposeBtn btn">Select Purpose</button></td>
+                </tr>
+            </table>
+        {% endif %}
+    
+</div>
+<div id="purposeForm" style="display: none;">
+    <h3>Enter Purpose</h3>
+    <form id="purposeInputForm" action="{{ url_for('auth.submit_purpose') }}" method="POST">
+        <div id="inOutOptions">
+            <label><input type="radio" id="inCheckbox" name="in_out" value="In"> In</label>
+            <label><input type="radio" id="outCheckbox" name="in_out" value="Out"> Out</label>
+        </div>
+        <div id="purposeInput" style="display: none;">
+            <input type="text" id="purpose" name="purpose" placeholder="Enter purpose">
+        </div>
+        <div id="allowDisallowOptions" style="display: none;">
+            <label><input type="radio" id="allowCheckbox" name="allow_disallow" value="Allow"> Allow</label>
+            <label><input type="radio" id="disallowCheckbox" name="allow_disallow" value="Disallow"> Disallow</label>
+        </div>
+        {%if registrations%}
+        {% for registration in registrations %}
+            <input type="hidden" id="vehicleNumber" name="vehicleNumber" value="{{ registration.vehicleNumber }}">
+        {%endfor%}
+        {% else %}
+        <input type="hidden" id="vehicleNumber" name="vehicleNumber" value="{{ request.args.get('plate_number') }}">
+        {%endif%}
+        <button type="submit" id="submitForm" class="btn" style="display: none;">Submit</button>
+    </form>
+</div>
+    {% endblock %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var showPurposeBtns = document.querySelectorAll('.showPurposeBtn');
+        var purposeForm = document.getElementById('purposeForm');
+
+        function showPurposeForm() {
+            purposeForm.style.display = 'block';
+        }
+
+        var visitorInfo = "{{ visitor_info }}";
+        if (visitorInfo) {
+        // If visitor info exists, directly send the notification
+            var id = "{{ visitor_info.user_id }}";
+            var name = "{{ visitor_info.name }}";
+            var purpose = "{{ visitor_info.purpose }}";
+            sendNotification(id, name, purpose);
+        }
+
+        // Attach event listeners to all "Select Purpose" buttons
+        showPurposeBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                showPurposeForm();
+            });
+        });
+
+        var inCheckbox = document.getElementById('inCheckbox');
+        var outCheckbox = document.getElementById('outCheckbox');
+        var purposeInput = document.getElementById('purposeInput');
+        var purposeText = document.getElementById('purpose');
+        var allowDisallowOptions = document.getElementById('allowDisallowOptions');
+        var allowCheckbox = document.getElementById('allowCheckbox');
+        var disallowCheckbox = document.getElementById('disallowCheckbox');
+        var submitFormBtn = document.getElementById('submitForm');
+
+        function showPurposeInput() {
+            purposeInput.style.display = 'block';
+        }
+
+        function showAllowDisallowOptions() {
+            allowDisallowOptions.style.display = 'block';
+        }
+
+        function togglePurposeInput() {
+            purposeText.value = ''; // Clear previous purpose text
+            purposeInput.style.display = inCheckbox.checked ? 'block' : 'none';
+            allowDisallowOptions.style.display = inCheckbox.checked ? 'block' : 'none';
+            submitFormBtn.style.display = (purposeText.value !== '' && (allowCheckbox.checked || disallowCheckbox.checked)) ? 'inline-block' : 'none';
+        }
+
+        // Attach event listeners to In/Out radio buttons
+        inCheckbox.addEventListener('change', function() {
+            togglePurposeInput();
+        });
+
+        outCheckbox.addEventListener('change', function() {
+            purposeInput.style.display = 'none';
+            allowDisallowOptions.style.display = 'none';
+            submitFormBtn.style.display = 'inline-block';
+        });
+
+        // Attach event listener to Purpose input
+        purposeText.addEventListener('input', function() {
+            submitFormBtn.style.display = (purposeText.value !== '' && (allowCheckbox.checked || disallowCheckbox.checked)) ? 'inline-block' : 'none';
+        });
+
+        // Attach event listeners to Allow/Disallow radio buttons
+        allowCheckbox.addEventListener('change', function() {
+            submitFormBtn.style.display = (purposeText.value !== '' && (allowCheckbox.checked || disallowCheckbox.checked)) ? 'inline-block' : 'none';
+        });
+
+        disallowCheckbox.addEventListener('change', function() {
+            submitFormBtn.style.display = (purposeText.value !== '' && (allowCheckbox.checked || disallowCheckbox.checked)) ? 'inline-block' : 'none';
+        });
+
+        // Attach event listener to form submission
+        submitFormBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            var formData = new FormData(purposeInputForm);
+            fetch("{{ url_for('auth.submit_purpose') }}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Handle success here, e.g., show a message, clear form, redirect, etc.
+                window.location.href = "{{ url_for('auth.search_registration', plate_number='none') }}";
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+
+        function sendData(action, vehicleNumber, name, id) {
+            // Send the selected action to the server
+            fetch("{{ url_for('auth.process_action') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: action, vehicleNumber:vehicleNumber, name:name, id:id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                window.location.href = "{{ url_for('auth.search_registration', plate_number='none') }}";
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Attach event listeners to "in" and "out" buttons
+        document.querySelectorAll('.in-out-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var action = btn.dataset.action; // Get the action (in or out)
+                var vehicleNumber = btn.dataset.vehicle;
+                console.log(btn.dataset.vehicle);
+                var name = btn.dataset.name;
+                var id = btn.dataset.id;
+                sendData(action, vehicleNumber, name, id);
+            });
+        });
+        let visitor_id_123 = null;
+        function sendNotification(id, name, purpose) {
+            fetch("{{ url_for('auth.send_notification') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id, name: name, purpose: purpose }) // Send user ID and name in JSON format
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                console.log('id',data.visid);
+                visitor_id_123 = data.visid;
+                // Handle success here, e.g., show a message, clear form, redirect, etc.
+                // Instead of redirecting, update the UI to display the pending action
+                // updatePendingAction(name);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        function sendNotification1(visitor_id, name, purpose) {
+            console.log('vis_id', visitor_id_123)
+            fetch("{{ url_for('auth.send_notification1') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: visitor_id_123, name: name, purpose: purpose }) // Send user ID and name in JSON format
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                td1 = document.getElementById("td1")
+                td1.innerHTML = "<p>" + data.action + "</p>"
+
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        let interval = setInterval(() => {
+            // Execute the function
+            sendNotification1(id,name,purpose);
+
+            // Clear the interval after 10 seconds
+            setTimeout(() => {
+                clearInterval(interval);
+            }, 10000); // 10 seconds in milliseconds
+        }, 10000); // 10 seconds in milliseconds
+
+        function updatePendingAction(name) {
+            fetch("{{ url_for('auth.get_pending_action') }}?name=" + name, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Pending Action:', data);
+                // Update the UI to display the pending action for the visitor
+                // For example, you can update a specific element with the pending action
+                // Assuming you have an element with id="pendingAction", you can update its innerHTML
+                document.getElementById('pendingAction').innerHTML = data.action;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    });
+</script>
+
+{% endblock %}
+</body>
+</html>

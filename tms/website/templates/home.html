@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}home{% endblock %}
+
+{% block content %}
+    <p>Hello, {{ user.first_name }}. Welcome  to home</p>
+    <br>
+    <button onclick="window.location.href='/register'" class="btn">Register your vehicle</button>
+    <button onclick="window.location.href='/visitorForm'" class="btn">Visitor Form</button>
+    <button onclick="window.location.href='/vehicles'" class="btn">My vehicles</button>
+    <button onclick="window.location.href='/myVisitors'" class="btn">My visitors</button>
+    <button onclick="window.location.href='/vehicleRecords'" class="btn">Vehicle Records</button>
+    <button onclick="window.location.href='/PendingRequests'" class="btn">Pending Requests</button>
+    <div>
+        {% block template %}
+        {% endblock %}
+    </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base2.html" %}
+{%block content%}
+    <button onclick="window.location.href='/approval'" class="btn">Registration</button>
+    <button onclick="window.location.href='/vehiclesinfo'" class="btn">Vehicles</button>
+    <div>
+        {% block template %}
+        {% endblock %}
+    </div>
+
+{%endblock%}

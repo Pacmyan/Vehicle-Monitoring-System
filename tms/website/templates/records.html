@@ -1,0 +1,58 @@
+{% extends "admin.html" %}
+{% block template %}
+<h2>Records</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Record ID</th>
+      <th>User ID</th>
+      <th>Name</th>
+      <th>Vehicle Number</th>
+      <th>Allow/Disallow</th>
+      <th>In/Out</th>
+      <th>Purpose</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in rrecords %}
+    <tr>
+      <td>{{ record.id }}</td>
+      <td>{{ record.user_id }}</td>
+      <td>{{ record.name }}</td>
+      <td>{{ record.vehicleNumber }}</td>
+      <td>{{ record.allowDisallow }}</td>
+      <td>{{ record.inOut }}</td>
+      <td>{{ record.purpose }}</td>
+      <td>{{ record.date }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Unregistered Records</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Record ID</th>
+      <th>Vehicle Number</th>
+      <th>Allow/Disallow</th>
+      <th>In/Out</th>
+      <th>Purpose</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in urecords %}
+    <tr>
+      <td>{{ record.id }}</td>
+      <td>{{ record.vehicleNumber }}</td>
+      <td>{{ record.allowDisallow }}</td>
+      <td>{{ record.inOut }}</td>
+      <td>{{ record.purpose }}</td>
+      <td>{{ record.date }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

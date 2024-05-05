@@ -1,0 +1,91 @@
+{% extends "home.html" %}
+{% block template %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Registration Form</title>
+    <style>
+        /* Basic styling for the form */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #303030;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #000000;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Visitor Registration Form</h2>
+    <form method="post">
+        <label for="name">Name of the Visitor:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="date">Date of arrival:</label>
+        <input type="date" id="date" name="date" required>
+        
+        <label for="faculty_name">Name of the Faculty:</label>
+        <input type="text" id="faculty_name" name="faculty_name" required>
+        
+        <label for="occupation">Occupation:</label>
+        <input type="text" id="occupation" name="occupation" required> 
+        
+        <label for="faculty_id">Faculty ID Number:</label>
+        <input type="text" id="faculty_id" name="faculty_id" required>
+        
+        <label for="email">Faculty University Email ID:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="vehicle_number">Vehicle number:</label>
+        <input type="text" id="vehicle_number" name="vehicle_number" required>
+        
+        <label for="vehicle_type">Vehicle Type:</label>
+        <select name="vehicle_type" id="vehicle_type">
+            <option value="Car">Car</option>
+            <option value="Bike">Bike</option>
+            <option value="Scooter">Scooter</option>
+        </select>
+
+        <label for="purpose">Purpose of Visiting:</label>
+        <input type="text" id="purpose" name="purpose" required>
+        
+        <input type="submit" value="Register">
+    </form>
+</div>
+
+</body>
+</html>
+{% endblock %}

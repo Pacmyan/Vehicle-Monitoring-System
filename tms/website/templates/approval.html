@@ -1,0 +1,49 @@
+{% extends "admin.html" %}
+{% block template %}
+<h2>Pending Registrations</h2>
+{% if registrations %}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Vehicle Number</th>
+      <th>Licence Number</th>
+      <th>University ID</th>
+      <th>University Email</th>
+      <th>Vehicle Type</th>
+      <th>File</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for registration in registrations %}
+    <tr>
+      <td>{{ registration.name }}</td>
+      <td>{{ registration.vehicleNumber }}</td>
+      <td>{{ registration.licenceNumber }}</td>
+      <td>{{ registration.universityId }}</td>
+      <td>{{ registration.universityEmail }}</td>
+      <td>{{ registration.vehicleType }}</td>
+      <td>
+        {% if registration.filename %}
+        <a href="{{ url_for('auth.approval', filename=registration.filename) }}" download="{{ registration.filename }}">Download File</a>
+        {% else %}
+        No file uploaded
+        {% endif %}
+      </td>
+      <td>
+        <form action="{{ url_for('auth.accept_registration', id=registration.id) }}" method="post" style="display: inline;">
+          <button type="submit">Accept</button>
+        </form>
+        <form action="{{ url_for('auth.decline_registration', id=registration.id) }}" method="post" style="display: inline;">
+          <button type="submit">Decline</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No registrations with status "pending" found.</p>
+{% endif %}
+{% endblock %}

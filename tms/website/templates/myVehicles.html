@@ -1,0 +1,36 @@
+{% extends "home.html" %}
+Register Your Vehicle
+{%block template%}
+your vehicles
+{% if vehicles %}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Vehicle Number</th>
+      <th>Licence Number</th>
+      <th>University ID</th>
+      <th>University Email</th>
+      <th>Vehicle Type</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for vehicle in vehicles %}
+    <tr>
+      <td>{{ vehicle.name }}</td>
+      <td>{{ vehicle.vehicleNumber }}</td>
+      <td>{{ vehicle.licenceNumber }}</td>
+      <td>{{ vehicle.universityId }}</td>
+      <td>{{ vehicle.universityEmail }}</td>
+      <td>{{ vehicle.vehicleType }}</td>
+      <td>{{ vehicle.approval }}</td>
+    
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No registrations with status "notApproved" found.</p>
+{% endif %}
+{%endblock%}

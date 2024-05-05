@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}title{% endblock %}</title>
+  <style>
+    .navbar {
+      background-color: black;
+      overflow: hidden;
+    }
+
+    .navbar a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+    }
+
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    /* Button Styles */
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: auto;
+      border-radius: 5px;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    /* Close button for alerts */
+    .close-btn {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      cursor: pointer;
+      float: right;
+      font-size: 20px;
+      border-radius: 50%;
+      padding: 5px 10px;
+    }
+
+    .close-btn:hover {
+      background-color: #d32f2f;
+    }
+
+    /* Container for alerts */
+    .alert {
+      padding: 20px;
+      background-color: #f44336; /* Red */
+      color: white;
+      margin-bottom: 15px;
+      border-radius: 5px;
+    }
+
+    /* Success Alert */
+    .alert.success {
+      background-color: #4CAF50; /* Green */
+    }
+
+    /* Table Styles */
+    table {
+      border-collapse: collapse;
+      width: 100%; /* Adjust as needed */
+      margin: 20px auto;
+      border-radius: 10px; /* Add rounded corners */
+      overflow: hidden; /* Add this to clip the table corners */
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      background-color: #070707; /* Consistent color for all cells */
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #3498db;
+      color: rgb(79, 79, 79);
+      font-weight: bold;
+      border-top-left-radius: 10px; /* Add rounded corners to header cells */
+      border-top-right-radius: 10px;
+    }
+
+    tr:last-child td {
+      border-bottom: none; /* Remove bottom border from last row */
+    }
+
+    tr:nth-child(even) {
+      background-color: #121111; /* Consistent color for all rows */
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    tr:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* Dark background and white font color for the body */
+    body {
+      background-color: #2b2b2b;
+      color: white;
+      font-family: 'Times New Roman', Times, serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    {% if user.is_authenticated %}
+      <a href="/home">Home</a>
+      {% block extras%}{% endblock %}
+      <a href="/logout">Log out</a>
+    {% else %}
+      <a href="/signup">Sign up</a>
+      <a href="/loginn">Login</a>
+      <a href="/">User</a>
+    {% endif %}
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert{% if category == 'success' %} success{% endif %}" role="alert">
+          {{ message }}
+          <button type="button" class="close-btn" onclick="closeAlert(this)">
+            Close
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}<div>
+    {% block content %}
+      <table>
+        <thead>
+          <tr>
+            <th>Column 1</th>
+            <th>Column 2</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            </tr>
+          </tbody>
+      </table>
+    {% endblock %}
+  </div>
+
+  <script>
+    function closeAlert(button) {
+      button.parentElement.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

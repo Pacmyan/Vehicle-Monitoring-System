@@ -1,0 +1,81 @@
+{% extends "home.html" %}
+Register Your Vehicle
+{%block template%}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #474747;
+    }
+    .container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #000000;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0 20px 0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-sizing: border-box;
+    }
+    input[type="submit"] {
+        width: 100%;
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+</style>
+<body>
+
+<div class="container">
+    <h2>Registration Form</h2>
+    <form method="post" enctype="multipart/form-data">
+        <div class="content-form">
+            <label for="Name">Name of the Owner:</label>
+            <input type="text" class="input-form" id="Name" name="Name" required>            
+        </div>
+        <div class="content-form">
+        <label for="Vehcile registration number">Vehicle Registration Number:</label>
+        <input type="text" id="number" class= "input-form" name="Vehicle registration number" required>
+        </div>
+        <div class="content-form">
+        <label for="Licence">Licence Number</label>
+        <input type="text" id="licence" class= "input-form" name="licence" required>
+        </div>
+        <div class="content-form">
+        <label for="ID">University ID Number:</label>
+        <input type="text" id="ID" class= "input-form" name="ID" required>
+        </div>
+        <div class="content-form">
+        <label for="email">University Email ID:</label>
+        <input type="email" id="email" class= "input-form" name="email" required>
+        </div>
+        <div class="content-form">
+    <label for="cars">Vechile Type:</label>
+
+<select name="Vehicle Type" id="Vechile type">
+  <option value="Car">Car</option>
+  <option value="Bike">Bike</option>
+</select>
+<label for="cars">Upload RC</label>
+<input type="file" name="file" id="file" accept="image/*, application/pdf, .doc, .docx">
+<input type="submit" value="Register">
+</form>
+</div>
+
+    
+{%endblock%}
